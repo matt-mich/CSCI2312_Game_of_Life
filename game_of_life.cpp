@@ -74,7 +74,7 @@ void init_game(Cell cell[HEIGHT][WIDTH]){
 int main() {
     //Print a message to the console to indicate that the game has started
     std::cout << "game start, type a number" << std::endl;
-    //Declare a temporary seed variable and a character variable
+    //Declare a integer temp_seed variable and a temp character variable
     int temp_seed;
     char temp;
     //Take input from the user and seed the random number generator
