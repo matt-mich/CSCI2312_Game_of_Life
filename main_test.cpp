@@ -2,11 +2,10 @@
 #include <chrono>
 #include <thread>
 #include <string>
-
+#include <SDL2/SDL.h>
 // Info for Sleep function:
 // https://stackoverflow.com/questions/158585/how-do-you-add-a-timed-delay-to-a-c-program
 using namespace std::this_thread;     // sleep_for, sleep_until
-using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
 using std::chrono::system_clock;
 
 const int WIDTH = 50;
@@ -60,7 +59,62 @@ void init_game(Cell cell[HEIGHT][WIDTH]){
     }
 }
 
-int main() {
+#define WINDOW_WIDTH 200
+#define WINDOW_HEIGHT 100
+
+void drawToScreen(SDL_Renderer* renderer,int x, int y, SDL_Color color){
+    SDL_SetRenderDrawColor(renderer, color.r,color.g,color.b,color.a);
+    SDL_RenderDrawPoint(renderer, x, y);
+}
+
+
+void readEvents(SDL_Event& event, int& running){
+    SDL_PollEvent(&event);
+    switch( event.type ){
+        case SDL_KEYDOWN:
+            printf( "Key press detected\n" );
+            break;
+        case SDL_KEYUP:
+            if(event.key.keysym.sym == SDLK_ESCAPE){
+                running = 0;
+            }
+            printf( "Key release detected\n" );
+            break;
+        case SDL_QUIT:
+            running = 0;
+            break;
+        default:
+            break;
+    }
+}
+
+
+int main(int argv, char** args) {
+    // Initialize SDL objects
+    SDL_Event event;
+    SDL_Renderer *renderer;
+    SDL_Window *window;
+    SDL_Color white = {255,255,255,255};
+    SDL_Color BG = {0,0,0,255};
+
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+
+    int running = 1;
+    while (running) {
+        SDL_RenderClear(renderer);
+        readEvents(event,running);
+        drawToScreen(renderer,10,10,white);
+
+        SDL_SetRenderDrawColor(renderer, BG.r,BG.g,BG.b,BG.a);
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    return 0;
     std::cout << "game start, type a number" << std::endl;
     int temp_seed;
     char temp;
@@ -128,7 +182,7 @@ int main() {
 //        sleep_until(system_clock::now() + 50ms);
         std::cout << curr_line << std::endl;
 
-        sleep_until(system_clock::now() + 50ms);
+        sleep_until(system_clock::now() + std::chrono::milliseconds(50));
         if(all_dead){
             std::cout << "All life has been exterminated. Good job, hero." << std::endl;
             printf("It survived for %d rounds. Continue? Y/N",round_count);
