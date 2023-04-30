@@ -67,7 +67,6 @@ void drawToScreen(SDL_Renderer* renderer,int x, int y, SDL_Color color){
     SDL_RenderDrawPoint(renderer, x, y);
 }
 
-
 void readEvents(SDL_Event& event, int& running){
     SDL_PollEvent(&event);
     switch( event.type ){
@@ -98,7 +97,7 @@ int main(int argv, char** args) {
     SDL_Color BG = {0,0,0,255};
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT,  0, &window, &renderer);
 
     int running = 1;
     while (running) {
